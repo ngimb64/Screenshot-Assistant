@@ -1,22 +1,30 @@
-import pathlib
+# Built-in modules #
+from multiprocessing import Process
+import os, logging, pathlib, random, time
+
+# Third-party modules #
 from PIL import ImageGrab
 from pynput.keyboard import Key, Listener
-from multiprocessing import Process
-import random
-import logging
-import time
 
 def on_press(key):
     global screenshot
 
-    if key == Key.esc or KeyboardInterrupt:
+    if key == Key.esc:
         screenshot.terminate()
         return False
 
 def screenshots(file_path):
     for x in range(0, 120):
         pic = ImageGrab.grab()
-        pic.save(file_path + str(random.randrange(1,600)) + '.png')
+
+        while True:
+            pic_path = file_path + f'Screenshot {str(random.randrange(1,1000))}' + '.png'
+            if not os.path.isfile(pic_path):
+                pic.save(pic_path)
+                break
+            else:
+                continue
+
         time.sleep(5)
 
 def main():
