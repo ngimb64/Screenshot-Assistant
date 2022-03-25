@@ -1,9 +1,11 @@
 # Built-in modules #
+import logging
+import os
+import pathlib
 import sys
 from multiprocessing import Process
 from shlex import quote
 from time import sleep
-import os, logging, pathlib
 
 # Third-party modules #
 from PIL import ImageGrab
@@ -129,7 +131,7 @@ if __name__ == '__main__':
         # Create storage directory #
         pathlib.Path('C:/Users/Public/Screenshots').mkdir(parents=True, exist_ok=True)
         file_path = 'C:\\Users\\Public\\Screenshots\\'
-    # Linux #
+    # If OS is Linux #
     else:
         # Shell-escape system command input #
         cmd = quote(cmds[1])
@@ -163,7 +165,10 @@ if __name__ == '__main__':
         if time_interval:
             main()
 
+    # If control + c is pressed #
     except KeyboardInterrupt:
         print('* Ctrl-C detected ... program exiting *')
+
+    # If unknown error occurs #
     except Exception as ex:
         logging.exception(f'* Error Occurred: {ex} *')
