@@ -14,14 +14,26 @@ global screenshot
 last_pic = 0
 
 '''
+################
+Function Index #
 ########################################################################################################################
-Name:       on_press
+OnPress - Checks to see if the user hit the exit key (escape).
+Screenshots - Loop that actively takes screenshots.
+main - Facilitates listener thread and screenshot process.
+PrintErr - Prints timed error message.
+########################################################################################################################
+'''
+
+
+'''
+########################################################################################################################
+Name:       OnPress
 Purpose:    Checks to see if the user hit the exit key (escape).
 Parameters: The key the user pressed detected by the key listener.
 Returns:    False boolean flag, which terminates the key listener thread.
 ########################################################################################################################
 '''
-def on_press(key) -> bool:
+def OnPress(key) -> bool:
     global screenshot
 
     # If the user hit the escape key #
@@ -33,13 +45,13 @@ def on_press(key) -> bool:
 
 '''
 ########################################################################################################################
-Name:       screenshots
+Name:       Screenshots
 Purpose:    Loop that actively takes screenshots.
 Parameters: The path where the screenshots are being stored.
 Returns:    None
 ########################################################################################################################
 '''
-def screenshots(path: str, seconds: int):
+def Screenshots(path: str, seconds: int):
     global last_pic
 
     while True:
@@ -78,8 +90,8 @@ def main():
     input('Please hit enter to begin\n')
 
     # Create the key listener thread and screenshot process #
-    key_listener = Listener(on_press=on_press)
-    screenshot = Process(target=screenshots, args=(file_path, time_interval))
+    key_listener = Listener(on_press=OnPress)
+    screenshot = Process(target=Screenshots, args=(file_path, time_interval))
 
     # Start the processes #
     key_listener.start()
