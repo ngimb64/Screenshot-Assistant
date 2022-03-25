@@ -1,29 +1,15 @@
 ## Prereqs
-> To make sure this program runs as designed Python 3.8 
-> should be installed. Also any of the required modules
-> need to be installed. I recommend simply googling the module 
-> name and finding the documentation. The PIP command for installation 
-> is usually one of the first things mentioned. Also with Python it is 
-> common to have multiple modules with similar names. So if errors are 
-> being raised about not having a certain module it is most likely the 
-> wrong module with a similar name to the one that is required was installed 
-> instead of the required module.
+> This program runs on Windows and Linux, written in Python 3.8
 
 ## Installation
-> Google Python downloads and obtain version 3.8 from the
-> official website. Run the installer and follow the default
-> installation procedures. Also Google any required modules and
-> install them with PIP in Command Prompt.
+> Once Python is installed, run the setup.py script to install external modules.
 
 ## Purpose
-> This is a simple, yet very functional program designed to
-> make the process of gathering screenshots a piece of cake.
-> It automates screenshots using a keyboard listener to control
-> whether it the program starts, stops, or exits. This program
-> will loop as many times as desired.
+> This is a simple, functional program designed automate gathering screenshots.
+> It automates screenshots using a keyboard listener to control whether the program starts, stops, or exits.
 
 ## How to use
-- Open up Command Prompt (CMD)
+- Open up shell such as Command Prompt or Terminal
 - Enter directory with program and run it
 - Open the graphical file manager and go to path specified in program
 - Click on the open CMD and hit enter
