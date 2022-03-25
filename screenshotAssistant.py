@@ -21,7 +21,7 @@ Parameters: The key the user pressed detected by the key listener.
 Returns:    False boolean flag, which terminates the key listener thread.
 ########################################################################################################################
 '''
-def on_press(key: str) -> bool:
+def on_press(key) -> bool:
     global screenshot
 
     # If the user hit the escape key #
@@ -58,6 +58,7 @@ def screenshots(path: str, seconds: int):
                 last_pic += 1
                 break
 
+            # Increment static count #
             last_pic += 1
 
         sleep(seconds)
@@ -67,11 +68,11 @@ def screenshots(path: str, seconds: int):
 ########################################################################################################################
 Name:       main
 Purpose:    Facilitates listener thread and screenshot process.
-Parameters: The interval of time between screenshots in seconds.
+Parameters: None
 Returns:    None
 ########################################################################################################################
 '''
-def main(time_interval: int):
+def main():
     global screenshot
 
     input('Please hit enter to begin\n')
@@ -88,7 +89,7 @@ def main(time_interval: int):
     key_listener.join(600.0)
     screenshot.join(timeout=600)
 
-    main(time_interval)
+    main()
 
 
 '''
@@ -110,27 +111,36 @@ if __name__ == '__main__':
 
     # If OS is Windows #
     if os.name == 'nt':
+        # Shell-escape system command input #
         cmd = quote(cmds[0])
-    else:
-        cmd = quote(cmds[1])
 
-    try:
         # Create storage directory #
         pathlib.Path('C:/Users/Public/Screenshots').mkdir(parents=True, exist_ok=True)
         file_path = 'C:\\Users\\Public\\Screenshots\\'
-        prompt = None
+    # Linux #
+    else:
+        # Shell-escape system command input #
+        cmd = quote(cmds[1])
+
+        # Create storage directory #
+        pathlib.Path('tmp/Screenshots').mkdir(parents=True, exist_ok=True)
+        file_path = '\\tmp\\Screenshots\\'
+
+    try:
+        time_interval = None
 
         while True:
             # Clear the display #
             os.system(cmd)
             try:
-                prompt = int(input('Enter screenshot time interval (1-120) seconds: '))
-                if prompt < 1 or prompt > 120:
+                time_interval = int(input('Enter screenshot time interval (1-120) seconds: '))
+                # If interval is out of range #
+                if time_interval < 1 or time_interval > 120:
                     PrintErr('[ERROR] Improper input: enter a number between 1-120', 2)
                     continue
 
                 break
-
+            # If non integer value is entered #
             except ValueError:
                 PrintErr('[ERROR] Improper input: enter a number integer not other data types', 2)
                 continue
@@ -138,8 +148,8 @@ if __name__ == '__main__':
         # clear the display #
         os.system(cmd)
 
-        if prompt:
-            main(prompt)
+        if time_interval:
+            main()
 
     except KeyboardInterrupt:
         print('* Ctrl-C detected ... program exiting *')
