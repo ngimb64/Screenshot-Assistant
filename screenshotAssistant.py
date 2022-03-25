@@ -1,58 +1,147 @@
 # Built-in modules #
+import sys
 from multiprocessing import Process
-import os, logging, pathlib, random, time
+from shlex import quote
+from time import sleep
+import os, logging, pathlib
 
 # Third-party modules #
 from PIL import ImageGrab
 from pynput.keyboard import Key, Listener
 
-def on_press(key):
+# Global variables #
+global screenshot
+last_pic = 0
+
+'''
+########################################################################################################################
+Name:       on_press
+Purpose:    Checks to see if the user hit the exit key (escape).
+Parameters: The key the user pressed detected by the key listener.
+Returns:    False boolean flag, which terminates the key listener thread.
+########################################################################################################################
+'''
+def on_press(key: str) -> bool:
     global screenshot
 
+    # If the user hit the escape key #
     if key == Key.esc:
+        # Terminate the screenshot capture process #
         screenshot.terminate()
         return False
 
-def screenshots(file_path):
-    for x in range(0, 120):
+
+'''
+########################################################################################################################
+Name:       screenshots
+Purpose:    Loop that actively takes screenshots.
+Parameters: The path where the screenshots are being stored.
+Returns:    None
+########################################################################################################################
+'''
+def screenshots(path: str, seconds: int):
+    global last_pic
+
+    while True:
+        # Take a screenshot #
         pic = ImageGrab.grab()
 
         while True:
-            pic_path = file_path + f'Screenshot {str(random.randrange(1,1000))}' + '.png'
+            # Format screenshot to number of last screenshot capture #
+            pic_path = f'{path}Screenshot{last_pic}.png'
+
+            # If file name is unique #
             if not os.path.isfile(pic_path):
+                # Save the picture as png #
                 pic.save(pic_path)
+                # Increment static count #
+                last_pic += 1
                 break
-            else:
-                continue
 
-        time.sleep(5)
+            last_pic += 1
 
-def main():
+        sleep(seconds)
+
+
+'''
+########################################################################################################################
+Name:       main
+Purpose:    Facilitates listener thread and screenshot process.
+Parameters: The interval of time between screenshots in seconds.
+Returns:    None
+########################################################################################################################
+'''
+def main(time_interval: int):
     global screenshot
 
     input('Please hit enter to begin\n')
 
+    # Create the key listener thread and screenshot process #
     key_listener = Listener(on_press=on_press)
-    screenshot = Process(target=screenshots, args=(file_path,))
+    screenshot = Process(target=screenshots, args=(file_path, time_interval))
+
+    # Start the processes #
     key_listener.start()
     screenshot.start()
-    
+
+    # Join the processes #
     key_listener.join(600.0)
     screenshot.join(timeout=600)
 
-    main()
+    main(time_interval)
+
+
+'''
+########################################################################################################################
+Name:       PrintErr
+Purpose:    Prints timed error message.
+Parameters: None
+Returns:    None
+########################################################################################################################
+'''
+def PrintErr(msg: str, secs: int):
+    print(f'\n* {msg} *\n', file=sys.stderr)
+    sleep(secs)
 
 
 if __name__ == '__main__':
-    try:
-        pathlib.Path('C:/Users/Public/Screenshots')\
-                .mkdir(parents=True, exist_ok=True)
-        file_path = 'C:\\Users\\Public\\Screenshots\\'
+    # Command syntax tuple #
+    cmds = ('cls', 'clear')
 
-        main()
+    # If OS is Windows #
+    if os.name == 'nt':
+        cmd = quote(cmds[0])
+    else:
+        cmd = quote(cmds[1])
+
+    try:
+        # Create storage directory #
+        pathlib.Path('C:/Users/Public/Screenshots').mkdir(parents=True, exist_ok=True)
+        file_path = 'C:\\Users\\Public\\Screenshots\\'
+        prompt = None
+
+        while True:
+            # Clear the display #
+            os.system(cmd)
+            try:
+                prompt = int(input('Enter screenshot time interval (1-120) seconds: '))
+                if prompt < 1 or prompt > 120:
+                    PrintErr('[ERROR] Improper input: enter a number between 1-120', 2)
+                    continue
+
+                break
+
+            except ValueError:
+                PrintErr('[ERROR] Improper input: enter a number integer not other data types', 2)
+                continue
+
+        # clear the display #
+        os.system(cmd)
+
+        if prompt:
+            main(prompt)
 
     except KeyboardInterrupt:
         print('* Ctrl-C detected ... program exiting *')
-
     except Exception as ex:
-        logging.exception('* Error Ocurred: {} *'.format(ex))
+        logging.exception(f'* Error Occurred: {ex} *')
