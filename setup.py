@@ -16,6 +16,7 @@ Returns:    None
 def Install(package, stdout, stderr, exec_time):
     command = Popen(['pip', 'install', '--user', package], stdout=stdout, stderr=stderr, shell=False)
     try:
+        # Execute command #
         command.communicate(exec_time)
     except (SubprocessError, TimeoutExpired, CalledProcessError, OSError, ValueError):
         command.kill()
