@@ -22,7 +22,7 @@
 - Enter directory with program and run it
 - Open the graphical file manager and go to path specified in program
 - Click on the open CMD and hit enter
-- Look at the file manager and see the screenshots created every 5 seconds
+- Checkout the file manager and to visualize screenshots created every 5 seconds
 - If you want the program to pause hit Esc
 - If you want to start again hit enter again.
 - OR if you would like to exit hit Ctrl + C (Keyboard Interrupt)
