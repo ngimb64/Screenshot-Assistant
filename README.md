@@ -10,7 +10,7 @@
 > Example:<br>
 > python3 setup.py "venv name"
 
-- Once virtual env is built traverse to the Scripts directory in the environment folder just created.
+- Once virtual env is built move to the Scripts directory in the environment folder just created.
 - In the Scripts directory, execute the "activate" script to activate the virtual environment.
 
 ## Purpose
@@ -25,4 +25,4 @@
 - Checkout the file manager and to visualize screenshots created every 5 seconds
 - If you want the program to pause hit Esc
 - If you want to start again hit enter again.
-- OR if you would like to exit hit Ctrl + C (Keyboard Interrupt)
+- OR if you would like to exit hit Ctrl + C
