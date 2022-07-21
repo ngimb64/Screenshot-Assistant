@@ -8,9 +8,14 @@ from threading import Thread
 from urllib.parse import urlparse
 from urllib.request import urlretrieve
 
-
 # Global variables #
-PACKAGE_FILENAME = 'packages.txt'
+
+# If the OS is Windows #
+if os.name == 'nt':
+    PACKAGE_FILENAME = 'windows_packages.txt'
+# If the OS is Linux #
+else:
+    PACKAGE_FILENAME = 'linux_packages.txt'
 
 
 class ExtendedEnvBuilder(venv.EnvBuilder):
@@ -36,6 +41,7 @@ class ExtendedEnvBuilder(venv.EnvBuilder):
                      If a callable is not specified, default progress
                      information is output to sys.stderr.
     """
+
     def __init__(self, *args, **kwargs):
         self.nodist = kwargs.pop('nodist', False)
         self.nopip = kwargs.pop('nopip', False)
@@ -55,13 +61,25 @@ class ExtendedEnvBuilder(venv.EnvBuilder):
 
         if not self.nodist:
             self.install_setuptools(context)
-        
+
         # Can't install pip without setuptools #
         if not self.nopip and not self.nodist:
             self.install_pip(context)
 
-        # Upgrade pip to most recent version (60 second timeout) #
-        command = Popen([f'{context.env_dir}\\Scripts\\pip.exe', 'install', '--upgrade', 'pip'])
+        # Get the current working dir #
+        path = os.getcwd()
+
+        # If the OS is Windows #
+        if os.name == 'nt':
+            # Upgrade pip to most recent version (60 second timeout) #
+            command = Popen([f'{context.env_dir}\\Scripts\\pip.exe', 'install', '--upgrade', 'pip'])
+            package_path = f'{path}\\{PACKAGE_FILENAME}'
+        # If the OS is Linux #
+        else:
+            # Upgrade pip to most recent version (60 second timeout) #
+            command = Popen([f'{context.env_dir}/bin/pip', 'install', '--upgrade', 'pip'])
+            package_path = f'{path}/{PACKAGE_FILENAME}'
+
         try:
             # Timeout child process after 60 seconds #
             command.communicate(timeout=60)
@@ -70,12 +88,16 @@ class ExtendedEnvBuilder(venv.EnvBuilder):
             command.communicate()
 
         # If the package list file exists and has read access #
-        if os.path.isfile(f'./{PACKAGE_FILENAME}') and os.access(f'./{PACKAGE_FILENAME}', os.R_OK):
-            # Get the current working directory #
-            path = os.getcwd()
+        if os.path.isfile(package_path) and os.access(package_path, os.R_OK):
+            # If the OS is Windows #
+            if os.name == 'nt':
+                # Install modules in linux_packages.txt with pip #
+                command = Popen([f'{context.env_dir}\\Scripts\\pip.exe', 'install', '-r', f'{path}\\{PACKAGE_FILENAME}'])
+            # If the OS is Linux #
+            else:
+                # Install modules in linux_packages.txt with pip #
+                command = Popen([f'{context.env_dir}/bin/pip', 'install', '-r', f'{path}/{PACKAGE_FILENAME}'])
 
-            # Install packages in packages.txt with pip #
-            command = Popen([f'{context.env_dir}\\Scripts\\pip.exe', 'install', '-r', f'{path}\\{PACKAGE_FILENAME}'])
             try:
                 # Timeout child process after 5 minutes #
                 command.communicate(timeout=300)
@@ -131,22 +153,22 @@ class ExtendedEnvBuilder(venv.EnvBuilder):
         # Install in the virtual environment
         args = [context.env_exe, fn]
         p = Popen(args, stdout=PIPE, stderr=PIPE, cwd=binpath)
-        
+
         t1 = Thread(target=self.reader, args=(p.stdout, 'stdout'))
         t1.start()
-        
+
         t2 = Thread(target=self.reader, args=(p.stderr, 'stderr'))
         t2.start()
-        
+
         p.wait()
         t1.join()
         t2.join()
-        
+
         if progress is not None:
             progress('done.', 'main')
         else:
             sys.stderr.write('done.\n')
-        
+
         # Clean up - no longer needed
         os.unlink(distpath)
 
@@ -159,11 +181,11 @@ class ExtendedEnvBuilder(venv.EnvBuilder):
         """
         url = 'https://github.com/abadger/setuptools/blob/master/ez_setup.py'
         self.install_script(context, 'setuptools', url)
-        
+
         # clear up the setuptools archive which gets downloaded
         pred = lambda o: o.startswith('setuptools-') and o.endswith('.tar.gz')
         files = filter(pred, os.listdir(context.bin_path))
-        
+
         for f in files:
             f = os.path.join(context.bin_path, f)
             os.unlink(f)
@@ -178,9 +200,10 @@ class ExtendedEnvBuilder(venv.EnvBuilder):
         url = 'https://bootstrap.pypa.io/get-pip.py'
         self.install_script(context, 'pip', url)
 
+
 def main(args=None):
     compatible = True
-    
+
     if sys.version_info < (3, 3):
         compatible = False
     elif not hasattr(sys, 'base_prefix'):
@@ -236,21 +259,21 @@ def main(args=None):
                                                  'in-place.')
         parser.add_argument('--verbose', default=False, action='store_true',
                             dest='verbose', help='Display the output '
-                                               'from the scripts which '
-                                               'install setuptools and pip.')
+                                                 'from the scripts which '
+                                                 'install setuptools and pip.')
         options = parser.parse_args(args)
 
         if options.upgrade and options.clear:
             raise ValueError('you cannot supply --upgrade and --clear together.')
-        
+
         builder = ExtendedEnvBuilder(system_site_packages=options.system_site,
-                                       clear=options.clear,
-                                       symlinks=options.symlinks,
-                                       upgrade=options.upgrade,
-                                       nodist=options.nodist,
-                                       nopip=options.nopip,
-                                       verbose=options.verbose)
-        
+                                     clear=options.clear,
+                                     symlinks=options.symlinks,
+                                     upgrade=options.upgrade,
+                                     nodist=options.nodist,
+                                     nopip=options.nopip,
+                                     verbose=options.verbose)
+
         [builder.create(d) for d in options.dirs]
 
 

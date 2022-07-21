@@ -3,13 +3,14 @@ import logging
 import os
 import pathlib
 import sys
+import time
 from multiprocessing import Process
 from shlex import quote
-from time import sleep
 
 # Third-party modules #
 from PIL import ImageGrab
 from pynput.keyboard import Key, Listener
+
 
 '''
 ################
@@ -21,6 +22,7 @@ main - Facilitates listener thread and screenshot process.
 PrintErr - Prints timed error message.
 ########################################################################################################################
 '''
+
 
 # Global variables #
 global screenshot
@@ -50,7 +52,7 @@ def OnPress(key) -> bool:
 Name:       Screenshots
 Purpose:    Loop that actively takes screenshots.
 Parameters: The path where the screenshots are being stored.
-Returns:    None
+Returns:    Nothing
 ########################################################################################################################
 '''
 def Screenshots(path: str, seconds: int):
@@ -75,15 +77,15 @@ def Screenshots(path: str, seconds: int):
             # Increment static count #
             last_pic += 1
 
-        sleep(seconds)
+        time.sleep(seconds)
 
 
 '''
 ########################################################################################################################
 Name:       main
 Purpose:    Facilitates listener thread and screenshot process.
-Parameters: None
-Returns:    None
+Parameters: Nothing
+Returns:    Nothing
 ########################################################################################################################
 '''
 def main():
@@ -109,36 +111,37 @@ def main():
 '''
 ########################################################################################################################
 Name:       PrintErr
-Purpose:    Prints timed error message.
-Parameters: None
-Returns:    None
+Purpose:    Displays the passed in error message via stderr the durations on seconds passed in.
+Parameters: The message to be displayed the duration is should be displayed.
+Returns:    Nothing
 ########################################################################################################################
 '''
 def PrintErr(msg: str, secs: int):
-    print(f'\n* {msg} *\n', file=sys.stderr)
-    sleep(secs)
+    print(f'\n* [ERROR] {msg} *\n', file=sys.stderr)
+    time.sleep(secs)
 
 
 if __name__ == '__main__':
     # Command syntax tuple #
     cmds = ('cls', 'clear')
 
+    # Get the current working directory #
+    cwd = os.getcwd()
+
     # If OS is Windows #
     if os.name == 'nt':
         # Shell-escape system command input #
         cmd = quote(cmds[0])
+        file_path = f'{cwd}\\ScreenshotDock\\'
 
-        # Create storage directory #
-        pathlib.Path('C:/Users/Public/Screenshots').mkdir(parents=True, exist_ok=True)
-        file_path = 'C:\\Users\\Public\\Screenshots\\'
     # If OS is Linux #
     else:
         # Shell-escape system command input #
         cmd = quote(cmds[1])
+        file_path = f'{cwd}/ScreenshotDock/'
 
-        # Create storage directory #
-        pathlib.Path('tmp/Screenshots').mkdir(parents=True, exist_ok=True)
-        file_path = '\\tmp\\Screenshots\\'
+    # Ensure screenshot dir exists #
+    pathlib.Path(file_path).mkdir(parents=True, exist_ok=True)
 
     try:
         time_interval = None
@@ -150,13 +153,13 @@ if __name__ == '__main__':
                 time_interval = int(input('Enter screenshot time interval (1-120) seconds: '))
                 # If interval is out of range #
                 if time_interval < 1 or time_interval > 120:
-                    PrintErr('[ERROR] Improper input: enter a number between 1-120', 2)
+                    PrintErr('Improper input: enter a number between 1-120', 2)
                     continue
 
                 break
             # If non integer value is entered #
             except ValueError:
-                PrintErr('[ERROR] Improper input: enter a number integer not other data types', 2)
+                PrintErr('Improper input: enter a number integer not other data types', 2)
                 continue
 
         # clear the display #

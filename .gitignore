@@ -1,2 +1,9 @@
 # Ignore Pycharm files #
 .idea/
+
+# Ignore venv files #
+venv/*
+
+# Ignore the contents of ScreenshotDock #
+ScreenshotDock/*
+!ScreenshotDock/.keep
