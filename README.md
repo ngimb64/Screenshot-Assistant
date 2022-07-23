@@ -1,5 +1,6 @@
 # Screenshot Assistant
 ![alt text](https://github.com/ngimb64/Screenshot-Assistant/blob/master/ScreenshotAssistant.gif?raw=true)
+![alt text](https://github.com/ngimb64/Screenshot-Assistant/blob/master/ScreenshotAssistant.png?raw=true)
 
 ## Prereqs
 > This program runs on Windows and Linux, written in Python 3.8
