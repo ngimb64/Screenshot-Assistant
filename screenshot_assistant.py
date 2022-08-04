@@ -5,6 +5,7 @@ import pathlib
 import sys
 import time
 from multiprocessing import Process
+from shlex import quote
 # Third-party modules #
 from PIL import ImageGrab
 from pynput.keyboard import Key, Listener
@@ -116,13 +117,13 @@ if __name__ == '__main__':
     # If OS is Windows #
     if os.name == 'nt':
         # Shell-escape system command input #
-        CMD = cmds[0]
+        CMD = quote(cmds[0])
         file_path = f'{cwd}\\ScreenshotDock\\'
 
     # If OS is Linux #
     else:
         # Shell-escape system command input #
-        CMD = cmds[1]
+        CMD = quote(cmds[1])
         file_path = f'{cwd}/ScreenshotDock/'
 
     # Ensure screenshot dir exists #
