@@ -2,6 +2,10 @@
 ![alt text](https://github.com/ngimb64/Screenshot-Assistant/blob/master/ScreenshotAssistant.gif?raw=true)
 ![alt text](https://github.com/ngimb64/Screenshot-Assistant/blob/master/ScreenshotAssistant.png?raw=true)
 
+&#9745;&#65039; Bandit verified<br>
+&#9745;&#65039; Synk verified<br>
+&#9745;&#65039; Pylint verified 9.44/10
+
 ## Prereqs
  This program runs on Windows and Linux, written in Python 3.8
 
