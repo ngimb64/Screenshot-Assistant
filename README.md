@@ -4,7 +4,7 @@
 
 &#9745;&#65039; Bandit verified<br>
 &#9745;&#65039; Synk verified<br>
-&#9745;&#65039; Pylint verified 9.44/10
+&#9745;&#65039; Pylint verified 9.45/10
 
 ## Prereqs
  This program runs on Windows and Linux, written in Python 3.8
@@ -34,8 +34,10 @@ It automates screenshots using a keyboard listener to control whether the progra
 
 ## Function Layout
 -- screenshot_assistant.py --
+> on_press &nbsp;-&nbsp; Checks to see if the user hit the exit key (escape).
 
-> on_press &nbsp;-&nbsp; Checks to see if the user hit the exit key (escape).<br>
-> screenshots &nbsp;-&nbsp; Loop that actively takes screenshots.<br>
-> main &nbsp;-&nbsp; Facilitates listener thread and screenshot process.<br>
+> screenshots &nbsp;-&nbsp; Loop that actively takes screenshots.
+
+> main &nbsp;-&nbsp; Facilitates listener thread and screenshot process.
+
 > print_err &nbsp;-&nbsp; Prints timed error message.
