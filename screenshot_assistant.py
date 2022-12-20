@@ -1,9 +1,10 @@
+# pylint: disable=E0401
 """ Built-in modules """
 import logging
 import os
-import pathlib
 import sys
 import time
+from pathlib import Path
 from multiprocessing import Process
 from shlex import quote
 # Third-party modules #
@@ -35,7 +36,7 @@ def on_press(key) -> bool:
     return True
 
 
-def screenshots(path: str, seconds: int):
+def screenshots(path: Path, seconds: int):
     """
     Loop that actively takes screenshots.
 
@@ -51,8 +52,7 @@ def screenshots(path: str, seconds: int):
 
         while True:
             # Format screenshot to number of last capture #
-            pic_path = f'{path}Screenshot{LAST_PIC}.png'
-
+            pic_path = path / f'Screenshot{LAST_PIC}.png'
             # If file name is unique #
             if not os.path.isfile(pic_path):
                 # Save the picture as png #
@@ -67,7 +67,30 @@ def screenshots(path: str, seconds: int):
         time.sleep(seconds)
 
 
-def main(wait_interval: int):
+def get_time_interval() -> int:
+    """
+    Gets the time interval integer from user and returns to main.
+
+    :return:  The input time interval integer.
+    """
+    while True:
+        try:
+            # Get the screenshot time interval #
+            interval_input = int(input('[+] Enter screenshot time interval (1-120) seconds: '))
+            # If interval is out of range #
+            if interval_input < 1 or interval_input > 120:
+                print_err('Improper input: enter a number between 1-120', 2)
+                continue
+
+            return interval_input
+
+        # If non integer value is entered #
+        except ValueError:
+            print_err('Improper input: enter a number integer not other data types', 2)
+            continue
+
+
+def main():
     """
     Facilitates listener thread and screenshot process.
 
@@ -76,23 +99,25 @@ def main(wait_interval: int):
     """
     global SCREENSHOT
 
-    input('Please hit enter to begin or ctrl+c to stop ')
-    print('\nNow taking screenshots, hit escape to stop')
+    input('[+] Please hit enter to begin or ctrl+c to stop ')
+    # Get the time interval #
+    wait_interval = get_time_interval()
+    print('\n[!] Now taking screenshots, hit escape to stop')
 
     # Create the key listener thread and screenshot process #
     key_listener = Listener(on_press=on_press)
     SCREENSHOT = Process(target=screenshots, args=(file_path, wait_interval))
-
     # Start the processes #
     key_listener.start()
     SCREENSHOT.start()
-
     # Join the processes #
     key_listener.join(600.0)
     SCREENSHOT.join(timeout=600)
 
-    print()
-    main(wait_interval)
+    # clear the display #
+    os.system(CMD)
+    # Loop back to beginning of main #
+    main()
 
 
 def print_err(msg: str, secs: int):
@@ -105,59 +130,33 @@ def print_err(msg: str, secs: int):
     """
     print(f'\n* [ERROR] {msg} *\n', file=sys.stderr)
     time.sleep(secs)
+    # Clear the display #
+    os.system(CMD)
 
 
 if __name__ == '__main__':
-    # Command syntax tuple #
-    cmds = ('cls', 'clear')
-
     # Get the current working directory #
-    cwd = os.getcwd()
+    cwd = Path('.')
+    file_path = cwd / 'ScreenshotDock'
+    # Ensure screenshot dir exists #
+    Path(str(file_path.resolve())).mkdir(parents=True, exist_ok=True)
 
     # If OS is Windows #
     if os.name == 'nt':
         # Shell-escape system command input #
-        CMD = quote(cmds[0])
-        file_path = f'{cwd}\\ScreenshotDock\\'
-
+        CMD = quote('cls')
     # If OS is Linux #
     else:
         # Shell-escape system command input #
-        CMD = quote(cmds[1])
-        file_path = f'{cwd}/ScreenshotDock/'
-
-    # Ensure screenshot dir exists #
-    pathlib.Path(file_path).mkdir(parents=True, exist_ok=True)
+        CMD = quote('clear')
 
     try:
-        TIME_INTERVAL = None
-
-        while True:
-            # Clear the display #
-            os.system(CMD)
-            try:
-                TIME_INTERVAL = int(input('Enter screenshot time interval (1-120) seconds: '))
-                # If interval is out of range #
-                if TIME_INTERVAL < 1 or TIME_INTERVAL > 120:
-                    print_err('Improper input: enter a number between 1-120', 2)
-                    continue
-
-                break
-            # If non integer value is entered #
-            except ValueError:
-                print_err('Improper input: enter a number integer not other data types', 2)
-                continue
-
-        # clear the display #
-        os.system(CMD)
-
-        if TIME_INTERVAL:
-            main(TIME_INTERVAL)
+        main()
 
     # If control + c is pressed #
     except KeyboardInterrupt:
-        print('* Ctrl-C detected ... program exiting *')
+        print('\n[!] Ctrl-C detected ... program exiting \n\n')
 
     # If unknown error occurs during multiprocessing #
     except OSError as ex:
-        logging.exception('* Error Occurred: %s *', ex)
+        logging.exception('Unexpected Error Occurred: %s\n', ex)
