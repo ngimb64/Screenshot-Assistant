@@ -7,8 +7,7 @@
 &#9745;&#65039; Pylint verified 9.44/10
 
 ## Prereqs
- This program runs on Windows 10 and Debian-based Linux, written in Python 3.8 and updated version 3.10.6
-version
+ This program runs on Windows 10 and Debian-based Linux, written in Python 3.8 and updated to version 3.10.6
 
 ## Purpose
 This is a simple, functional program designed automate gathering screenshots based on time interval.<br>
