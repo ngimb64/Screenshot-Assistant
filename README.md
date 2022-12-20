@@ -11,7 +11,7 @@
 version
 
 ## Purpose
-This is a simple, functional program designed automate gathering screenshots.<br>
+This is a simple, functional program designed automate gathering screenshots based on time interval.<br>
 It automates screenshots using a keyboard listener to control whether the program starts, stops, or exits.
 
 ## Installation
@@ -25,7 +25,7 @@ It automates screenshots using a keyboard listener to control whether the progra
 - For Windows, in the venv\Scripts directory, execute `activate` or `activate.bat` script to activate the virtual environment.
 - For Linux, in the venv/bin directory, execute `source activate` to activate the virtual environment.
 - If for some reason issues are experienced with the setup script, the alternative is to manually create an environment, activate it, then run pip install -r packages.txt in project root.
-
+- To exit from the virtual environment when finished, execute `deactivate`.
 
 ## How to use
 - Open up shell such as Command Prompt or Terminal
