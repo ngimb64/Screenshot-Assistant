@@ -54,7 +54,7 @@ def screenshots(path: Path, seconds: int):
             # Format screenshot to number of last capture #
             pic_path = path / f'Screenshot{LAST_PIC}.png'
             # If file name is unique #
-            if not os.path.isfile(pic_path):
+            if not pic_path.exists():
                 # Save the picture as png #
                 pic.save(pic_path)
                 # Increment static count #
@@ -136,10 +136,11 @@ def print_err(msg: str, secs: int):
 
 if __name__ == '__main__':
     # Get the current working directory #
-    cwd = Path('.')
+    cwd = Path.cwd()
+    # Set the screenshot directory #
     file_path = cwd / 'ScreenshotDock'
     # Ensure screenshot dir exists #
-    Path(str(file_path.resolve())).mkdir(parents=True, exist_ok=True)
+    file_path.mkdir(parents=True, exist_ok=True)
 
     # If OS is Windows #
     if os.name == 'nt':
