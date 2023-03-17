@@ -1,7 +1,7 @@
 <div align="center" style="font-family: monospace">
 <h1>Screenshot Assistant</h1>
 &#9745;&#65039; Bandit verified &nbsp;|&nbsp; &#9745;&#65039; Synk verified &nbsp;|&nbsp;&#9745;&#65039; Pylint verified 9.44/10
-</div>
+</div><br>
 
 ![alt text](https://github.com/ngimb64/Screenshot-Assistant/blob/master/ScreenshotAssistant.gif?raw=true)
 ![alt text](https://github.com/ngimb64/Screenshot-Assistant/blob/master/ScreenshotAssistant.png?raw=true)
