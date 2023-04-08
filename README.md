@@ -10,8 +10,14 @@
 This is a simple, functional program designed automate gathering screenshots based on time interval.<br>
 It automates screenshots using a keyboard listener to control whether the program starts, stops, or exits.
 
+### License
+The program is licensed under [GNU Public License v3.0](LICENSE.md)
+
+### Contributions or Issues
+[CONTRIBUTING](CONTRIBUTING.md)
+
 ### Prereqs
-This program runs on Windows 10 and Debian-based Linux, written in Python 3.8 and updated to version 3.10.6
+The program runs on Windows 10 and Debian-based Linux, written in Python 3.8 and updated to version 3.10.6
 
 ### Installation
 - Run the setup.py script to build a virtual environment and install all external packages in the created venv.
